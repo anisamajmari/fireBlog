@@ -3,15 +3,17 @@
     <div class="app">
       <navigation-main></navigation-main>
       <router-view />
+      <footer-component></footer-component>
     </div>
   </div>
 </template>
 
 <script>
 import NavigationMain from './components/NavigationMain.vue';
+import FooterComponent from './components/FooterComponent.vue';
 
 export default {
-  components: { NavigationMain },
+  components: { NavigationMain, FooterComponent },
   data() {
     return {};
   },
