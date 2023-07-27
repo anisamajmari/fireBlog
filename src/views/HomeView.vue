@@ -48,14 +48,13 @@ export default {
           blogHTML: 'This is a filler blog post title!',
           blogCoverPhoto: 'designed-for-everyone'
         }
-      ],
-      sampleBlogCards: [
-        { blogTitle: 'Blog Card #1', blogCoverPhoto: 'stock-1', blogDate: 'May 1, 2021' },
-        { blogTitle: 'Blog Card #2', blogCoverPhoto: 'stock-2', blogDate: 'May 1, 2021' },
-        { blogTitle: 'Blog Card #3', blogCoverPhoto: 'stock-3', blogDate: 'May 1, 2021' },
-        { blogTitle: 'Blog Card #4', blogCoverPhoto: 'stock-4', blogDate: 'May 1, 2021' }
       ]
     };
+  },
+  computed: {
+    sampleBlogCards() {
+      return this.$store.state.sampleBlogCards;
+    }
   }
 };
 </script>
@@ -74,9 +73,11 @@ export default {
     padding: 100px;
     display: flex;
     align-items: center;
+    flex-direction: column;
     @media (min-width: 800px) {
       padding: 125px 25px;
       flex-direction: row;
+      justify-content: space-around;
     }
 
     .router-button {

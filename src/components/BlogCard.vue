@@ -1,6 +1,6 @@
 <template>
   <div class="blog-card">
-    <div class="icons">
+    <div v-show="editPost" class="icons">
       <div class="icon">
         <Edit class="edit" />
       </div>
@@ -27,6 +27,11 @@ export default {
   methods: {
     getImage(name) {
       return new URL(`../assets/blogCards/${name}.jpg`, import.meta.url).href;
+    }
+  },
+  computed: {
+    editPost() {
+      return this.$store.state.editPost;
     }
   }
 };
