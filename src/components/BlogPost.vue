@@ -16,24 +16,24 @@
       </div>
     </div>
     <div class="blog-photo">
-      <img v-if="post.welcomeScreen" :src="`${image1}`" alt="" />
-      <img v-else :src="`${image2}`" alt="" />
+      <img v-if="post.welcomeScreen" :src="`${getImage(post.photo)}`" alt="" />
+      <img v-else :src="`${getImage(post.blogCoverPhoto)}`" alt="" />
     </div>
   </div>
 </template>
 
 <script>
 import Arrow from '../assets/Icons/arrow-right-light.svg';
-import img1 from '../assets/blogPhotos/coding.jpg';
-import img2 from '../assets/blogPhotos/beautiful-stories.jpg';
 export default {
   props: ['post'],
   components: { Arrow },
+  methods: {
+    getImage(name) {
+      return new URL(`../assets/blogPhotos/${name}.jpg`, import.meta.url).href;
+    }
+  },
   data() {
-    return {
-      image1: img1,
-      image2: img2
-    };
+    return {};
   }
 };
 </script>
