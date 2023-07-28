@@ -1,11 +1,14 @@
 import { collection, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseInit.js';
 
-export async function addUser(firstName, lastName, username, email) {
+export async function addUser({ firstName, lastName, username, email, id }) {
   await addDoc(collection(db, 'users'), {
     firstName: firstName,
     lastname: lastName,
     username: username,
-    email: email
+    email: email,
+    id: id
   });
 }
+
+export async function getUser() {}

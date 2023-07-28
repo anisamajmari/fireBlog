@@ -49,11 +49,11 @@ export default {
   components: { emailImg, passwordImg, userImg },
   data() {
     return {
-      firstName: 'Anisa',
-      lastName: 'Rustemlli',
-      username: 'anisa',
-      email: 'anisa@co.com',
-      password: '111111',
+      firstName: '',
+      lastName: '',
+      username: '',
+      email: '',
+      password: '',
       error: null,
       errorMsg: ''
     };
@@ -71,8 +71,14 @@ export default {
         this.error = false;
         this.errorMsg = '';
 
-        await createFirebaseUser(this.email, this.password);
-        await addUser(this.firstName, this.lastName, this.username, this.email);
+        const created = await createFirebaseUser(this.email, this.password);
+        await addUser({
+          firstName: this.firstName,
+          email: this.email,
+          lastName: this.lastName,
+          username: this.username,
+          id: created.user.uid
+        });
 
         this.$router.push({ name: 'Home' });
         return;

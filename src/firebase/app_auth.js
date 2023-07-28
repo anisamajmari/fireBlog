@@ -16,3 +16,7 @@ export async function userSignIn(email, password) {
 export async function resetPassword(email) {
   return await sendPasswordResetEmail(auth, email);
 }
+
+export function getUser() {
+  return auth.currentUser;
+}

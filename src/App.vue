@@ -11,6 +11,7 @@
 <script>
 import NavigationMain from './components/NavigationMain.vue';
 import FooterComponent from './components/FooterComponent.vue';
+import { auth } from './firebase/firebaseInit.js';
 
 export default {
   components: { NavigationMain, FooterComponent },
@@ -20,6 +21,12 @@ export default {
     };
   },
   created() {
+    auth.onAuthStateChanged((user) => {
+      this.$store.commit('updateUser', user);
+      if (user) {
+        this.$store.dispatch('getCurrentUser');
+      }
+    });
     this.checkRoute();
   },
   mounted() {},
