@@ -15,9 +15,11 @@
           <input type="password" placeholder="Password" v-model="password" />
           <passwordImg class="icon" />
         </div>
+        <div class="error" v-show="error">{{ this.errorMsg }}</div>
       </div>
       <router-link class="forgot-password" to="/forgot-password">Forgot Password</router-link>
-      <button>Sign In</button>
+
+      <button @click.prevent="signIn">Sign In</button>
       <div class="angle"></div>
     </form>
     <div class="background"></div>
@@ -27,14 +29,38 @@
 <script>
 import emailImg from '../assets/Icons/envelope-regular.svg';
 import passwordImg from '../assets/Icons/lock-alt-solid.svg';
+import { userSignIn } from '../firebase/app_auth';
+
 export default {
   components: { emailImg, passwordImg },
   namespaced: 'Login',
   data() {
     return {
-      email: null,
-      password: null
+      email: '',
+      password: '',
+      error: null,
+      errorMsg: ''
     };
+  },
+  methods: {
+    async signIn() {
+      if (this.email !== '' && this.password !== '') {
+        await userSignIn(this.email, this.password)
+          .then((userCredential) => {
+            this.$router.push({ name: 'Home' });
+            this.error = false;
+            this.errorMsg = '';
+
+            const user = userCredential.user;
+
+            console.log(user);
+          })
+          .catch((err) => {
+            this.error = true;
+            this.errorMsg = err.message;
+          });
+      }
+    }
   }
 };
 </script>
