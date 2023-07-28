@@ -29,7 +29,8 @@
           <passwordImg class="icon" />
         </div>
       </div>
-      <button>Sign Up</button>
+      <div class="error" v-show="error">{{ this.errorMsg }}</div>
+      <button @click.prevent="register">Sign Up</button>
       <div class="angle"></div>
     </form>
     <div class="background"></div>
@@ -40,17 +41,46 @@
 import emailImg from '../assets/Icons/envelope-regular.svg';
 import passwordImg from '../assets/Icons/lock-alt-solid.svg';
 import userImg from '../assets/Icons/user-alt-light.svg';
+import { createFirebaseUser } from '../firebase/app_auth.js';
+import { addUser } from '../firebase/repository/user_repository.js';
+
 export default {
   namespaced: 'Register',
   components: { emailImg, passwordImg, userImg },
   data() {
     return {
-      firstName: null,
-      lastName: null,
-      username: null,
-      email: null,
-      password: null
+      firstName: 'Anisa',
+      lastName: 'Rustemlli',
+      username: 'anisa',
+      email: 'anisa@co.com',
+      password: '111111',
+      error: null,
+      errorMsg: ''
     };
+  },
+  methods: {
+    async register() {
+      if (
+        this.email !== '' &&
+        this.password !== '' &&
+        this.firstName !== '' &&
+        this.lastName !== '' &&
+        this.username !== ''
+      ) {
+        //
+        this.error = false;
+        this.errorMsg = '';
+
+        await createFirebaseUser(this.email, this.password);
+        await addUser(this.firstName, this.lastName, this.username, this.email);
+
+        this.$router.push({ name: 'Home' });
+        return;
+      }
+      this.error = true;
+      this.errorMsg = 'Please fill out all the fields!';
+      return;
+    }
   }
 };
 </script>
