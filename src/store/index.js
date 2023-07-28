@@ -1,7 +1,6 @@
 import Vuex from 'vuex';
 import { getUser } from '../firebase/app_auth';
-import { db } from '../firebase/firebaseInit';
-import { collection, query, where, getDocs } from 'firebase/firestore';
+import { findUser } from '../firebase/repository/user_repository';
 export default new Vuex.Store({
   state: {
     sampleBlogCards: [
@@ -42,11 +41,7 @@ export default new Vuex.Store({
   actions: {
     async getCurrentUser({ commit }) {
       const currentUser = getUser();
-      const usersRef = collection(db, 'users');
-      const q = query(usersRef, where('id', '==', currentUser.uid));
-
-      const querySnapshot = await getDocs(q);
-      const userDoc = querySnapshot.docs[0];
+      const userDoc = await findUser(currentUser.uid);
       commit('setProfileInfo', userDoc.data());
       commit('setProfileInitials');
     }

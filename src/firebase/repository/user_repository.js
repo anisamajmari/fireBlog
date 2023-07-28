@@ -1,4 +1,4 @@
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseInit.js';
 
 export async function addUser({ firstName, lastName, username, email, id }) {
@@ -11,4 +11,9 @@ export async function addUser({ firstName, lastName, username, email, id }) {
   });
 }
 
-export async function getUser() {}
+export async function findUser(id) {
+  const usersRef = collection(db, 'users');
+  const q = query(usersRef, where('id', '==', id));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs[0];
+}

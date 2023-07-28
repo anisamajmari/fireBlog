@@ -1,7 +1,8 @@
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  sendPasswordResetEmail
+  sendPasswordResetEmail,
+  signOut
 } from 'firebase/auth';
 import { auth } from './firebaseInit.js';
 
@@ -19,4 +20,8 @@ export async function resetPassword(email) {
 
 export function getUser() {
   return auth.currentUser;
+}
+
+export function signOutUser() {
+  return signOut(auth);
 }

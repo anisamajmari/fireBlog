@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <blog-post :post="welcomeScreen"></blog-post>
+    <blog-post v-if="!user" :post="welcomeScreen"></blog-post>
     <blog-post :post="post" v-for="(post, index) in sampleBlogPost" :key="index"></blog-post>
     <div class="blog-card-wrap">
       <div class="container">
@@ -10,7 +10,7 @@
         </div>
       </div>
     </div>
-    <div class="updates">
+    <div v-if="!user" class="updates">
       <div class="container">
         <h2>Never miss a post. Register for your free account today!</h2>
         <router-link class="router-button" to="#">
@@ -54,6 +54,9 @@ export default {
   computed: {
     sampleBlogCards() {
       return this.$store.state.sampleBlogCards;
+    },
+    user() {
+      return this.$store.state.user;
     }
   }
 };

@@ -49,7 +49,11 @@ export default {
     instagram,
     linkedin
   },
-  computed: {}
+  computed: {
+    user() {
+      return this.$store.state.user;
+    }
+  }
 };
 </script>
 
