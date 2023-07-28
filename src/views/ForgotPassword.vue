@@ -1,6 +1,6 @@
 <template>
   <div class="reset-password">
-    <ModalComponent v-if="modalActive" v-on:close-modal="closeModal" />
+    <ModalComponent v-if="modalActive" :modalMessage="modalMessage" v-on:close-modal="closeModal" />
     <LoadingComponent v-if="loading" />
     <div class="form-wrap">
       <form class="reset">
@@ -16,7 +16,7 @@
             <emailImg class="icon" />
           </div>
         </div>
-        <button>Reset</button>
+        <button @click.prevent="resetPassword">Reset</button>
         <div class="angle"></div>
       </form>
       <div class="background"></div>
@@ -28,6 +28,7 @@
 import emailImg from '../assets/Icons/envelope-regular.svg';
 import LoadingComponent from '../components/LoadingComponent.vue';
 import ModalComponent from '../components/ModalComponent.vue';
+import { resetPassword } from '../firebase/app_auth.js';
 
 export default {
   components: { emailImg, ModalComponent, LoadingComponent },
@@ -44,6 +45,20 @@ export default {
     closeModal() {
       this.modalActive = !this.modalActive;
       this.email = '';
+    },
+    async resetPassword() {
+      this.loading = true;
+      await resetPassword(this.email)
+        .then(() => {
+          this.modalMessage = 'If your account exists, you will receive an email.';
+          this.loading = false;
+          this.modalActive = true;
+        })
+        .catch((err) => {
+          this.modalMessage = err.message;
+          this.loading = false;
+          this.modalActive = true;
+        });
     }
   }
 };
