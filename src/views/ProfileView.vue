@@ -25,7 +25,7 @@
           <label for="email">Email:</label>
           <input disabled type="text" id="email" v-model="email" />
         </div>
-        <button>Save Changes</button>
+        <button @click="updateProfile">Save Changes</button>
       </div>
     </div>
   </div>
@@ -47,6 +47,39 @@ export default {
   methods: {
     closeModal() {
       this.modalActive = !this.modalActive;
+    },
+    updateProfile() {
+      this.$store.dispatch('updateUserSettings');
+      this.modalActive = !this.modalActive;
+    }
+  },
+  computed: {
+    firstName: {
+      get() {
+        return this.$store.state.profileFirstName;
+      },
+      set(payload) {
+        this.$store.commit('changeFirstName', payload);
+      }
+    },
+    lastName: {
+      get() {
+        return this.$store.state.profileLastName;
+      },
+      set(payload) {
+        this.$store.commit('changeLastName', payload);
+      }
+    },
+    username: {
+      get() {
+        return this.$store.state.profileUsername;
+      },
+      set(payload) {
+        this.$store.commit('changeUsername', payload);
+      }
+    },
+    email() {
+      return this.$store.state.profileEmail;
     }
   }
 };

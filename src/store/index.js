@@ -1,6 +1,6 @@
 import Vuex from 'vuex';
 import { getUser } from '../firebase/app_auth';
-import { findUser } from '../firebase/repository/user_repository';
+import { findUser, updateUser } from '../firebase/repository/user_repository';
 export default new Vuex.Store({
   state: {
     sampleBlogCards: [
@@ -36,6 +36,15 @@ export default new Vuex.Store({
     },
     updateUser(state, payload) {
       state.user = payload;
+    },
+    changeFirstName(state, payload) {
+      state.profileFirstName = payload;
+    },
+    changeLastName(state, payload) {
+      state.profileLastName = payload;
+    },
+    changeUsername(state, payload) {
+      state.profileUsername = payload;
     }
   },
   actions: {
@@ -44,6 +53,17 @@ export default new Vuex.Store({
       const userDoc = await findUser(currentUser.uid);
       commit('setProfileInfo', userDoc.data());
       commit('setProfileInitials');
+    },
+    async updateUserSettings({ commit, state }) {
+      const currentUser = state.profileId;
+      const updateUserData = await updateUser(
+        currentUser,
+        state.profileFirstName,
+        state.profileLastName,
+        state.profileUsername
+      );
+      commit('setProfileInitials');
+      console.log(updateUserData);
     }
   },
   modules: {}

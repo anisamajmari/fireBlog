@@ -1,4 +1,4 @@
-import { collection, addDoc, query, where, getDocs } from 'firebase/firestore';
+import { collection, addDoc, query, where, getDocs, doc, setDoc } from 'firebase/firestore';
 import { db } from '../firebaseInit.js';
 
 export async function addUser({ firstName, lastName, username, email, id }) {
@@ -16,4 +16,19 @@ export async function findUser(id) {
   const q = query(usersRef, where('id', '==', id));
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs[0];
+}
+
+export async function updateUser(id, firstName, lastName, username) {
+  const userDoc = await findUser(id);
+  const docRef = doc(db, 'users', userDoc.id);
+  await setDoc(
+    docRef,
+    {
+      firstName: firstName,
+      lastName: lastName,
+      username: username
+    },
+    { merge: true }
+  );
+  return userDoc;
 }
