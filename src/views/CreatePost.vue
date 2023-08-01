@@ -1,6 +1,7 @@
 <template>
   <div class="create-post">
     <BlogCoverPreview v-show="this.$store.state.blogPhotoPreview" />
+    <LoadingComponent v-show="loading" />
     <div class="container">
       <div :class="{ invisible: !error }" class="err-message">
         <p><span>Error: </span>{{ this.errorMsg }}</p>
@@ -35,7 +36,7 @@
         />
       </div>
       <div class="blog-actions">
-        <button>Publish Blog</button>
+        <button @click="uploadBlog">Publish Blog</button>
         <router-link class="router-button" :to="{ name: 'BlogPreview' }">Post Preview</router-link>
       </div>
     </div>
@@ -44,6 +45,8 @@
 
 <script>
 import BlogCoverPreview from '../components/BlogCoverPreview.vue';
+import LoadingComponent from '../components/LoadingComponent.vue';
+import { addBlog } from '../firebase/repository/blog_repository.js';
 import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { VueEditor, Quill } from 'vue3-editor';
 window.Quill = Quill;
@@ -54,7 +57,7 @@ import firebaseApp from '../firebase/firebaseInit';
 Quill.register('modules/imageResize', ImageResize);
 
 export default {
-  components: { VueEditor, BlogCoverPreview },
+  components: { VueEditor, BlogCoverPreview, LoadingComponent },
   namespaced: 'CreatePost',
   data() {
     return {
@@ -65,7 +68,8 @@ export default {
         modules: {
           imageResize: {}
         }
-      }
+      },
+      loading: null
     };
   },
   computed: {
@@ -109,13 +113,54 @@ export default {
         const storage = getStorage(firebaseApp);
         const imagesRef = ref(storage, `documents/blogPostPhotos/${file.name}`);
         const result = await uploadBytes(imagesRef, file);
-        console.log(result);
-        const url = await getDownloadURL(imagesRef);
+        const url = await getDownloadURL(result.ref);
         Editor.insertEmbed(cursorLocation, 'image', url);
         resetUploader();
       } catch (error) {
         console.log(error);
       }
+    },
+    errorHandler(message) {
+      this.error = true;
+      this.errorMsg = message;
+      setTimeout(() => {
+        this.error = false;
+      }, 5000);
+    },
+    async uploadBlog() {
+      try {
+        if (this.blogTitle.length !== 0 && this.blogHTML.length !== 0) {
+          if (this.file) {
+            this.loading = true;
+            const storage = getStorage(firebaseApp);
+            const imagesRef = ref(
+              storage,
+              `documents/blogPostPhotos/${this.$store.state.blogPhotoName}`
+            );
+            const result = await uploadBytes(imagesRef, this.file);
+            const url = await getDownloadURL(result.ref);
+            const timestamp = await Date.now();
+            await addBlog(
+              this.blogHTML,
+              url,
+              this.blogCoverPhotoName,
+              this.blogTitle,
+              this.profileId,
+              timestamp
+            );
+            this.$router.push({ name: 'ViewBlog' });
+            return;
+          }
+          this.errorHandler('Please ensure you uploaded a cover photo!');
+          return;
+        }
+        this.errorHandler('Please ensure that Blog Title & Blog Post has been filled!');
+        return;
+      } catch (error) {
+        console.log(error);
+        this.loading = false;
+      }
+      this.loading = false;
     }
   }
 };

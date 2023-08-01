@@ -8,6 +8,7 @@ import ProfileView from '../views/ProfileView.vue';
 import AdminView from '../views/AdminView.vue';
 import CreatePost from '../views/CreatePost.vue';
 import BlogPreview from '../views/BlogPreview.vue';
+import ViewBlog from '../views/ViewBlog.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -82,6 +83,14 @@ const router = createRouter({
       component: BlogPreview,
       meta: {
         title: 'Blog Peview'
+      }
+    },
+    {
+      path: '/view-Blog',
+      name: 'ViewBlog',
+      component: ViewBlog,
+      meta: {
+        title: 'View Blog'
       }
     }
   ]
