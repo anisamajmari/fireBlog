@@ -27,7 +27,12 @@
         </div>
       </div>
       <div class="editor">
-        <vue-editor :editorOptions="editorSettings" v-model="blogHTML" useCustomImageHandler />
+        <vue-editor
+          :editorOptions="editorSettings"
+          v-model="blogHTML"
+          useCustomImageHandler
+          @image-added="imageHandler"
+        />
       </div>
       <div class="blog-actions">
         <button>Publish Blog</button>
@@ -39,10 +44,12 @@
 
 <script>
 import BlogCoverPreview from '../components/BlogCoverPreview.vue';
+import { getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
 import { VueEditor, Quill } from 'vue3-editor';
 window.Quill = Quill;
 
 import ImageResize from 'quill-image-resize-vue';
+import firebaseApp from '../firebase/firebaseInit';
 
 Quill.register('modules/imageResize', ImageResize);
 
@@ -95,6 +102,20 @@ export default {
 
     openPreview() {
       this.$store.commit('openPhotoPreview');
+    },
+
+    async imageHandler(file, Editor, cursorLocation, resetUploader) {
+      try {
+        const storage = getStorage(firebaseApp);
+        const imagesRef = ref(storage, `documents/blogPostPhotos/${file.name}`);
+        const result = await uploadBytes(imagesRef, file);
+        console.log(result);
+        const url = await getDownloadURL(imagesRef);
+        Editor.insertEmbed(cursorLocation, 'image', url);
+        resetUploader();
+      } catch (error) {
+        console.log(error);
+      }
     }
   }
 };
