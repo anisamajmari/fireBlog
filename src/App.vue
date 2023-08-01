@@ -21,10 +21,12 @@ export default {
     };
   },
   created() {
-    auth.onAuthStateChanged((user) => {
+    auth.onAuthStateChanged(async (user) => {
       this.$store.commit('updateUser', user);
       if (user) {
-        this.$store.dispatch('getCurrentUser');
+        const token = await user.getIdTokenResult();
+        console.log(token.claims);
+        this.$store.dispatch('getCurrentUser', user);
       }
     });
     this.checkRoute();

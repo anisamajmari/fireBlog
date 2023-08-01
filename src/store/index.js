@@ -26,7 +26,7 @@ export default new Vuex.Store({
       state.profileId = doc.id;
       state.profileEmail = doc.email;
       state.profileFirstName = doc.firstName;
-      state.profileLastName = doc.lastname;
+      state.profileLastName = doc.lastName;
       state.profileUsername = doc.username;
     },
     setProfileInitials(state) {

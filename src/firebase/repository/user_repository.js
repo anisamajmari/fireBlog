@@ -4,7 +4,7 @@ import { db } from '../firebaseInit.js';
 export async function addUser({ firstName, lastName, username, email, id }) {
   await addDoc(collection(db, 'users'), {
     firstName: firstName,
-    lastname: lastName,
+    lastName: lastName,
     username: username,
     email: email,
     id: id
