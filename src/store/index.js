@@ -18,10 +18,10 @@ export default new Vuex.Store({
     profileUsername: null,
     profileId: null,
     profileInitials: null,
-    blogHtml: 'Write your blog title here...',
+    blogHTML: 'Write your blog title here...',
     blogTitle: '',
     blogPhotoName: '',
-    blogPhotoFileUrl: null,
+    blogPhotoFileURL: null,
     blogPhotoPreview: null
   },
   mutations: {
@@ -55,6 +55,24 @@ export default new Vuex.Store({
     },
     changeUsername(state, payload) {
       state.profileUsername = payload;
+    },
+    // Blog Post
+    newBlogPost(state, payload) {
+      state.blogHTML = payload;
+      console.log(state.blogHTML);
+    },
+    updateBlogTitle(state, payload) {
+      state.blogTitle = payload;
+    },
+
+    fileNameChange(state, payload) {
+      state.blogPhotoName = payload;
+    },
+    createFileURL(state, payload) {
+      state.blogPhotoFileURL = payload;
+    },
+    openPhotoPreview(state) {
+      state.blogPhotoPreview = !state.blogPhotoPreview;
     }
   },
   actions: {

@@ -1,5 +1,6 @@
 <template>
   <div class="create-post">
+    <BlogCoverPreview v-show="this.$store.state.blogPhotoPreview" />
     <div class="container">
       <div :class="{ invisible: !error }" class="err-message">
         <p><span>Error: </span>{{ this.errorMsg }}</p>
@@ -8,10 +9,17 @@
         <input type="text" placeholder="Enter Blog Title" v-model="blogTitle" />
         <div class="upload-file">
           <label for="blog-photo">Upload Cover Photo</label>
-          <input type="file" ref="blogPhoto" id="blog-photo" accept=".png, .jpg, .jpeg" />
+          <input
+            type="file"
+            ref="blogPhoto"
+            id="blog-photo"
+            @change="fileChange"
+            accept=".png, .jpg, .jpeg"
+          />
           <button
+            @click="openPreview"
             class="preview"
-            :class="{ 'button-inactive': !this.$store.state.blogPhotoFileUrl }"
+            :class="{ 'button-inactive': !this.$store.state.blogPhotoFileURL }"
           >
             Preview Photo
           </button>
@@ -30,7 +38,8 @@
 </template>
 
 <script>
-import Quill from 'quill';
+import BlogCoverPreview from '../components/BlogCoverPreview.vue';
+import { VueEditor, Quill } from 'vue3-editor';
 window.Quill = Quill;
 
 import ImageResize from 'quill-image-resize-vue';
@@ -38,9 +47,11 @@ import ImageResize from 'quill-image-resize-vue';
 Quill.register('modules/imageResize', ImageResize);
 
 export default {
+  components: { VueEditor, BlogCoverPreview },
   namespaced: 'CreatePost',
   data() {
     return {
+      file: null,
       error: null,
       errorMsg: null,
       editorSettings: {
@@ -49,6 +60,42 @@ export default {
         }
       }
     };
+  },
+  computed: {
+    profileId() {
+      return this.$store.state.profileId;
+    },
+    blogCoverPhotoName() {
+      return this.$store.state.blogPhotoName;
+    },
+    blogTitle: {
+      get() {
+        return this.$store.state.blogTitle;
+      },
+      set(payload) {
+        this.$store.commit('updateBlogTitle', payload);
+      }
+    },
+    blogHTML: {
+      get() {
+        return this.$store.state.blogHTML;
+      },
+      set(payload) {
+        this.$store.commit('newBlogPost', payload);
+      }
+    }
+  },
+  methods: {
+    fileChange() {
+      this.file = this.$refs.blogPhoto.files[0];
+      const fileName = this.file.name;
+      this.$store.commit('fileNameChange', fileName);
+      this.$store.commit('createFileURL', URL.createObjectURL(this.file));
+    },
+
+    openPreview() {
+      this.$store.commit('openPhotoPreview');
+    }
   }
 };
 </script>
