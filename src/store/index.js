@@ -17,7 +17,12 @@ export default new Vuex.Store({
     profileLastName: null,
     profileUsername: null,
     profileId: null,
-    profileInitials: null
+    profileInitials: null,
+    blogHtml: 'Write your blog title here...',
+    blogTitle: '',
+    blogPhotoName: '',
+    blogPhotoFileUrl: null,
+    blogPhotoPreview: null
   },
   mutations: {
     toggleEditPost(state, payload) {
