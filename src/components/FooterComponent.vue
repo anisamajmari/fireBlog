@@ -52,6 +52,9 @@ export default {
   computed: {
     user() {
       return this.$store.state.user;
+    },
+    admin() {
+      return this.$store.state.profileAdmin;
     }
   }
 };
