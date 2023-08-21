@@ -4,7 +4,7 @@
       <div class="icon">
         <Edit class="edit" />
       </div>
-      <div class="icon">
+      <div @click="deletePost" class="icon">
         <Delete class="delete" />
       </div>
     </div>
@@ -33,6 +33,9 @@ export default {
   methods: {
     getImage(name) {
       return new URL(`../assets/blogCards/${name}.jpg`, import.meta.url).href;
+    },
+    deletePost() {
+      this.$store.dispatch('deletePost', this.post.blogId);
     }
   },
   computed: {

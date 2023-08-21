@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 import { getUser } from '../firebase/app_auth';
 import { findUser, updateUser } from '../firebase/repository/user_repository';
-import { getBlog } from '../firebase/repository/blog_repository';
+import { getBlog, deletePost } from '../firebase/repository/blog_repository';
 export default new Vuex.Store({
   state: {
     // sampleBlogCards: [
@@ -84,6 +84,9 @@ export default new Vuex.Store({
     },
     openPhotoPreview(state) {
       state.blogPhotoPreview = !state.blogPhotoPreview;
+    },
+    filterBlogPost(state, payload) {
+      state.blogPosts = state.blogPosts.filter((post) => post.blogId !== payload);
     }
   },
   actions: {
@@ -111,6 +114,11 @@ export default new Vuex.Store({
     async getPost({ state }) {
       await getBlog(state);
       state.postLoaded = true;
+    },
+    // Delete post
+    async deletePost({ commit }, payload) {
+      await deletePost(payload);
+      commit('filterBlogPost', payload);
     }
   },
   modules: {}

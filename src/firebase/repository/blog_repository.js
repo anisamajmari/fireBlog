@@ -1,4 +1,4 @@
-import { collection, setDoc, orderBy, query, getDocs, doc } from 'firebase/firestore';
+import { collection, setDoc, orderBy, query, getDocs, doc, deleteDoc } from 'firebase/firestore';
 import { db } from '../firebaseInit.js';
 
 export async function addBlog(
@@ -41,4 +41,8 @@ export async function getBlog(state) {
       state.blogPosts.push(data);
     }
   });
+}
+
+export async function deletePost(payload) {
+  await deleteDoc(doc(db, 'blogPosts', payload));
 }
