@@ -20,7 +20,7 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-exports.addAdminRole = functions.https.onCall(async (data, context) => {
+exports.addAdminRole = functions.https.onCall(async (data) => {
   try {
     const auth = admin.auth();
     const user = await auth.getUserByEmail(data.email);

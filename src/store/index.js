@@ -1,14 +1,15 @@
 import Vuex from 'vuex';
 import { getUser } from '../firebase/app_auth';
 import { findUser, updateUser } from '../firebase/repository/user_repository';
+import { getBlog } from '../firebase/repository/blog_repository';
 export default new Vuex.Store({
   state: {
-    sampleBlogCards: [
-      { blogTitle: 'Blog Card #1', blogCoverPhoto: 'stock-1', blogDate: 'May 1, 2021' },
-      { blogTitle: 'Blog Card #2', blogCoverPhoto: 'stock-2', blogDate: 'May 1, 2021' },
-      { blogTitle: 'Blog Card #3', blogCoverPhoto: 'stock-3', blogDate: 'May 1, 2021' },
-      { blogTitle: 'Blog Card #4', blogCoverPhoto: 'stock-4', blogDate: 'May 1, 2021' }
-    ],
+    // sampleBlogCards: [
+    //   { blogTitle: 'Blog Card #1', blogCoverPhoto: 'stock-1', blogDate: 'May 1, 2021' },
+    //   { blogTitle: 'Blog Card #2', blogCoverPhoto: 'stock-2', blogDate: 'May 1, 2021' },
+    //   { blogTitle: 'Blog Card #3', blogCoverPhoto: 'stock-3', blogDate: 'May 1, 2021' },
+    //   { blogTitle: 'Blog Card #4', blogCoverPhoto: 'stock-4', blogDate: 'May 1, 2021' }
+    // ],
     editPost: null,
     user: null,
     profileAdmin: null,
@@ -22,7 +23,17 @@ export default new Vuex.Store({
     blogTitle: '',
     blogPhotoName: '',
     blogPhotoFileURL: null,
-    blogPhotoPreview: null
+    blogPhotoPreview: null,
+    blogPosts: [],
+    postLoaded: null
+  },
+  getters: {
+    blogPostsFeed(state) {
+      return state.blogPosts.slice(0, 2);
+    },
+    blogPostsCards(state) {
+      return state.blogPosts.slice(2, 6);
+    }
   },
   mutations: {
     toggleEditPost(state, payload) {
@@ -76,6 +87,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
+    // User
     async getCurrentUser({ commit }, user) {
       const currentUser = getUser();
       const userDoc = await findUser(currentUser.uid);
@@ -87,14 +99,18 @@ export default new Vuex.Store({
     },
     async updateUserSettings({ commit, state }) {
       const currentUser = state.profileId;
-      const updateUserData = await updateUser(
+      await updateUser(
         currentUser,
         state.profileFirstName,
         state.profileLastName,
         state.profileUsername
       );
       commit('setProfileInitials');
-      console.log(updateUserData);
+    },
+    // Posts
+    async getPost({ state }) {
+      await getBlog(state);
+      state.postLoaded = true;
     }
   },
   modules: {}
