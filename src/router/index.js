@@ -99,7 +99,7 @@ const router = createRouter({
       }
     },
     {
-      path: '/view-Blog',
+      path: '/view-Blog/:blogid',
       name: 'ViewBlog',
       component: ViewBlog,
       meta: {

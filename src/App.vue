@@ -1,6 +1,6 @@
 <template>
   <div class="app-wrapper">
-    <div class="app">
+    <div class="app" v-if="this.$store.state.postLoaded">
       <navigation-main v-if="!navigation"></navigation-main>
       <router-view />
       <footer-component v-if="!navigation"></footer-component>

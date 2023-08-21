@@ -1,12 +1,12 @@
 <template>
   <div class="home">
     <blog-post v-if="!user" :post="welcomeScreen"></blog-post>
-    <blog-post :post="post" v-for="(post, index) in sampleBlogPost" :key="index"></blog-post>
+    <blog-post :post="post" v-for="(post, index) in blogPostsFeed" :key="index"></blog-post>
     <div class="blog-card-wrap">
       <div class="container">
         <h3>View More Recent Blogs</h3>
         <div class="blog-cards">
-          <blog-card :post="post" v-for="(post, index) in sampleBlogCards" :key="index"></blog-card>
+          <blog-card :post="post" v-for="(post, index) in blogPostsCards" :key="index"></blog-card>
         </div>
       </div>
     </div>
@@ -36,24 +36,27 @@ export default {
           'Weekly blog articles with all things programming including HTML, CSS, JavaScript and more. Register today to never miss a post!',
         welcomeScreen: true,
         photo: 'coding'
-      },
-      sampleBlogPost: [
-        {
-          title: 'This is the title',
-          blogHTML: 'This is a filler blog post title!',
-          blogCoverPhoto: 'beautiful-stories'
-        },
-        {
-          title: 'This is the title',
-          blogHTML: 'This is a filler blog post title!',
-          blogCoverPhoto: 'designed-for-everyone'
-        }
-      ]
+      }
+      // sampleBlogPost: [
+      //   {
+      //     title: 'This is the title',
+      //     blogHTML: 'This is a filler blog post title!',
+      //     blogCoverPhoto: 'beautiful-stories'
+      //   },
+      //   {
+      //     title: 'This is the title',
+      //     blogHTML: 'This is a filler blog post title!',
+      //     blogCoverPhoto: 'designed-for-everyone'
+      //   }
+      // ]
     };
   },
   computed: {
-    sampleBlogCards() {
-      return this.$store.state.sampleBlogCards;
+    blogPostsFeed() {
+      return this.$store.getters.blogPostsFeed;
+    },
+    blogPostsCards() {
+      return this.$store.getters.blogPostsCards;
     },
     user() {
       return this.$store.state.user;

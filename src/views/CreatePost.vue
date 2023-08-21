@@ -148,7 +148,10 @@ export default {
               this.profileId,
               timestamp
             );
-            this.$router.push({ name: 'ViewBlog' });
+            await this.$store.dispatch('getPost');
+            this.loading = false;
+
+            this.$router.push({ name: 'Blogs' });
             return;
           }
           this.errorHandler('Please ensure you uploaded a cover photo!');
