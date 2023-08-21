@@ -9,6 +9,7 @@ import AdminView from '../views/AdminView.vue';
 import CreatePost from '../views/CreatePost.vue';
 import BlogPreview from '../views/BlogPreview.vue';
 import ViewBlog from '../views/ViewBlog.vue';
+import { auth } from '../firebase/firebaseInit';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -18,7 +19,8 @@ const router = createRouter({
       name: 'Home',
       component: HomeView,
       meta: {
-        title: 'Home'
+        title: 'Home',
+        requiresAuth: false
       }
     },
     {
@@ -26,7 +28,8 @@ const router = createRouter({
       name: 'Blogs',
       component: BlogsView,
       meta: {
-        title: 'Blogs'
+        title: 'Blogs',
+        requiresAuth: false
       }
     },
     {
@@ -34,7 +37,8 @@ const router = createRouter({
       name: 'Login',
       component: LoginView,
       meta: {
-        title: 'login'
+        title: 'login',
+        requiresAuth: false
       }
     },
     {
@@ -42,7 +46,8 @@ const router = createRouter({
       name: 'Register',
       component: RegisterView,
       meta: {
-        title: 'Register'
+        title: 'Register',
+        requiresAuth: false
       }
     },
     {
@@ -50,7 +55,8 @@ const router = createRouter({
       name: 'ForgotPassword',
       component: ForgotPassword,
       meta: {
-        title: 'Forgot Password'
+        title: 'Forgot Password',
+        requiresAuth: false
       }
     },
     {
@@ -58,7 +64,8 @@ const router = createRouter({
       name: 'Profile',
       component: ProfileView,
       meta: {
-        title: 'Profile'
+        title: 'Profile',
+        requiresAuth: true
       }
     },
     {
@@ -66,7 +73,9 @@ const router = createRouter({
       name: 'Admin',
       component: AdminView,
       meta: {
-        title: 'Admin'
+        title: 'Admin',
+        requiresAuth: true,
+        requiresAdmin: true
       }
     },
     {
@@ -74,7 +83,9 @@ const router = createRouter({
       name: 'CreatePost',
       component: CreatePost,
       meta: {
-        title: 'Create Post'
+        title: 'Create Post',
+        requiresAuth: true,
+        requiresAdmin: true
       }
     },
     {
@@ -82,7 +93,9 @@ const router = createRouter({
       name: 'BlogPreview',
       component: BlogPreview,
       meta: {
-        title: 'Blog Peview'
+        title: 'Blog Peview',
+        requiresAuth: true,
+        requiresAdmin: true
       }
     },
     {
@@ -90,7 +103,8 @@ const router = createRouter({
       name: 'ViewBlog',
       component: ViewBlog,
       meta: {
-        title: 'View Blog'
+        title: 'View Blog',
+        requiresAuth: false
       }
     }
   ]
@@ -99,5 +113,27 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   document.title = `${to.meta.title} | FireBlog`;
   next();
+});
+
+router.beforeEach(async (to, from, next) => {
+  let user = auth.currentUser;
+  let admin = null;
+  if (user) {
+    let token = await user.getIdTokenResult();
+    admin = token.claims.admin;
+  }
+  if (to.matched.some((res) => res.meta.requiresAuth)) {
+    if (user) {
+      if (to.matched.some((res) => res.meta.requiresAdmin)) {
+        if (admin) {
+          return next();
+        }
+        return next({ name: 'Home' });
+      }
+      return next();
+    }
+    return next({ name: 'Home' });
+  }
+  return next();
 });
 export default router;
