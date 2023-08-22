@@ -8,6 +8,7 @@ import ProfileView from '../views/ProfileView.vue';
 import AdminView from '../views/AdminView.vue';
 import CreatePost from '../views/CreatePost.vue';
 import BlogPreview from '../views/BlogPreview.vue';
+import EditBlog from '../views/EditBlog.vue';
 import ViewBlog from '../views/ViewBlog.vue';
 import { auth } from '../firebase/firebaseInit';
 
@@ -103,7 +104,16 @@ const router = createRouter({
       name: 'ViewBlog',
       component: ViewBlog,
       meta: {
-        title: 'View Blog',
+        title: 'View Blog Post',
+        requiresAuth: false
+      }
+    },
+    {
+      path: '/edit-Blog/:blogid',
+      name: 'EditBlog',
+      component: EditBlog,
+      meta: {
+        title: 'Edit Blog Post',
         requiresAuth: false
       }
     }

@@ -1,4 +1,13 @@
-import { collection, setDoc, orderBy, query, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import {
+  collection,
+  setDoc,
+  orderBy,
+  query,
+  getDocs,
+  doc,
+  deleteDoc,
+  updateDoc
+} from 'firebase/firestore';
 import { db } from '../firebaseInit.js';
 
 export async function addBlog(
@@ -36,7 +45,8 @@ export async function getBlog(state) {
         blogHTML: doc.data().blogHTML,
         blogCoverPhoto: doc.data().blogCoverPhoto,
         blogTitle: doc.data().blogTitle,
-        blogDate: doc.data().date
+        blogDate: doc.data().date,
+        blogCoverPhotoName: doc.data().blogCoverPhotoName
       };
       state.blogPosts.push(data);
     }
@@ -45,4 +55,25 @@ export async function getBlog(state) {
 
 export async function deletePost(payload) {
   await deleteDoc(doc(db, 'blogPosts', payload));
+}
+
+export async function updateBlog(postId, blogHtml, blogTitle) {
+  const docRef = doc(db, 'blogPosts', postId);
+
+  // Set the "capital" field of the city 'DC'
+  await updateDoc(docRef, {
+    blogHTML: blogHtml,
+    blogTitle: blogTitle
+  });
+}
+
+export async function updateBlogPhotos(postId, url, blogHtml, blogCoverPhotoName, blogTitle) {
+  const docRef = doc(db, 'blogPosts', postId);
+
+  updateDoc(docRef, {
+    blogHTML: blogHtml,
+    blogCoverPhoto: url,
+    blogCoverPhotoName: blogCoverPhotoName,
+    blogTitle: blogTitle
+  });
 }
